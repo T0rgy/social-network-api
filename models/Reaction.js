@@ -1,16 +1,16 @@
-const { Schema, Types } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const dateFormat = require('../utils/dateFormat');
 
 const ReactionSchema = new Schema(
     {
         reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId()
+            type: Types.ObjectId,
+            default: new Types.ObjectId()
         },
         reactionBody: {
             type: String,
             required: true,
-            validate: [({ length }) => length <= 280, "Reactions must be under 280 characters long."]
+            maxLength: 280
         },
         username: {
             type: String,
@@ -21,6 +21,12 @@ const ReactionSchema = new Schema(
             default: Date.now,
             get: createdAtValue => dateFormat(createdAtValue)
         },
+    },
+    {
+        toJSON: {
+            getters: true
+        },
+        id: false
     }
 );
 

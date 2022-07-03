@@ -7,7 +7,8 @@ const ThoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
-            validate: [({ length }) => length > 0 && length <= 280, "Thoughts must be between 1 and 280 characters long."]
+            minLength: 1,
+            maxLenght: 280
         },
         createdAt: {
             type: Date,
@@ -24,7 +25,8 @@ const ThoughtSchema = new Schema(
         toJSON: {
             getters: true,
             virtuals: true
-        }
+        },
+        id: false
     },
 );
 
