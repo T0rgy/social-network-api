@@ -1,16 +1,19 @@
 const { Thought, User } = require('../models');
 
 const thoughtController = {
+    // get method to return all thoughts
     getThoughts(req, res) {
         Thought.find({})
         .select('-__v')
         .then(thoughtData => res.json(thoughtData))
         .catch(err => res.status(400).json(err));
     },
+    // get method to return thought by id
     getThoughtById({ params }, res) {
         Thought.findOne({ _id: params.id })
         .select('-__v')
         .then(thoughtData => {
+            // if thought doesn't exist send error message
             if (!thoughtData) {
                 res.status(404).json({ message: 'No thought found with matching ID.' });
                 return;
@@ -19,8 +22,10 @@ const thoughtController = {
         })
         .catch(err => res.status(400).json(err));
     },
+    // creates new thought
     addThought({ body }, res) {
         Thought.create(body)
+        // uses the id generated from the new thought and matches username
         .then(({ _id }) => {
             return User.findOneAndUpdate(
                 { username: body.username },
@@ -28,12 +33,12 @@ const thoughtController = {
                 { new: true }
             );
         })
-        .then(thoughtData => {
-            if (!thoughtData) {
+        .then(userData => {
+            if (!userData) {
                 res.status(404).json({ message: 'No user found with matching id.'});
                 return;
             }
-            res.json(thoughtData);
+            res.json(userData);
         })
         .catch(err => res.status(400).json(err));
     },
